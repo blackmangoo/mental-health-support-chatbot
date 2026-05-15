@@ -2,28 +2,22 @@
 # Mental Health Support Chatbot - Dependencies
 # =============================================
 
-# Hugging Face
-transformers==4.47.1
-datasets==3.2.0
-accelerate==1.2.1
-peft==0.14.0
-
-# PyTorch (CPU - use GPU version on Colab)
+# Core ML stack
+transformers==4.46.3
+peft==0.13.2
 torch==2.5.1
+datasets==3.1.0
+accelerate==1.1.1
+huggingface-hub==0.26.2
+sentence-transformers==3.3.1
+faiss-cpu==1.9.0
 
-# Tokenizer
-sentencepiece==0.2.0
-protobuf==5.29.3
-
-# Evaluation
-evaluate==0.4.3
-rouge-score==0.1.2
-
-# Streamlit UI
+# UI and App
 streamlit==1.41.1
 
-# Environment variables
-python-dotenv==1.1.0
+# Database
+supabase==2.10.0
 
-# Docker support
-gunicorn==23.0.0
+# Utilities
+python-dotenv==1.0.1
+numpy==1.26.4
