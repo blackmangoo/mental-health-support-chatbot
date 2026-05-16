@@ -13,7 +13,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 
 # The HuggingFace Hub model path (username/model-name)
 # IMPORTANT: Update HF_USERNAME after creating HF account
-HF_USERNAME = "your-hf-username"  # <-- Update this after Colab training
+HF_USERNAME = "BlackMangoo"
 MODEL_ID = f"{HF_USERNAME}/{HF_MODEL_REPO}"
 
 # Fallback: If fine-tuned model not yet available, use this base model
