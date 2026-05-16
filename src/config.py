@@ -21,10 +21,11 @@ FALLBACK_MODEL_ID = "EleutherAI/gpt-neo-125m"
 
 # Generation parameters for empathetic responses
 GENERATION_CONFIG = {
-    "max_new_tokens": 150,
-    "temperature": 0.75,         # Warm, slightly creative
-    "top_p": 0.92,               # Nucleus sampling
-    "repetition_penalty": 1.3,   # Avoid repeating phrases
+    "max_new_tokens": 100,
+    "temperature": 0.8,          # Warm, slightly creative
+    "top_p": 0.9,                # Nucleus sampling
+    "repetition_penalty": 1.6,   # Strong: avoid repeating phrases
+    "no_repeat_ngram_size": 3,   # Never repeat 3-grams
     "do_sample": True,
 }
 

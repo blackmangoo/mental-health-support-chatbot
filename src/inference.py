@@ -132,6 +132,7 @@ def generate_response(
             temperature=GENERATION_CONFIG["temperature"],
             top_p=GENERATION_CONFIG["top_p"],
             repetition_penalty=GENERATION_CONFIG["repetition_penalty"],
+            no_repeat_ngram_size=GENERATION_CONFIG.get("no_repeat_ngram_size", 3),
             do_sample=GENERATION_CONFIG["do_sample"],
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
@@ -145,8 +146,15 @@ def generate_response(
     # Clean up the response
     response = response.split("User:")[0].strip()  # Stop at next user turn if any
     response = response.split("Serene:")[0].strip()  # Stop at repeated marker
+    response = response.split("[Emotion:")[0].strip()  # Stop at emotion marker
+    response = response.split("[Context:")[0].strip()  # Stop at context marker
     
-    if not response:
+    # Remove repeated word patterns (e.g., "word_word_word")
+    import re
+    response = re.sub(r'(\b\w+\b)(?:\s+\1){2,}', r'\1', response)
+    
+    if not response or len(response) < 5:
         response = "I hear you, and I'm here with you. Would you like to share more about how you're feeling?"
     
     return response
+
