@@ -7,7 +7,7 @@ import streamlit as st
 import sys, os, time, uuid
 
 # Add project root to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from src.config import APP_TITLE, APP_ICON, MAX_HISTORY_TURNS
 from src.emotion import detect_emotion, check_crisis, get_emotion_ui, EMOTION_COLORS
