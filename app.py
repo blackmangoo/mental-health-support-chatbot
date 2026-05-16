@@ -378,12 +378,18 @@ if not st.session_state.messages:
 
 # Load models with a nice spinner
 if not st.session_state.models_loaded:
-    with st.spinner("🧠 Loading AI models... (first time only, ~30s)"):
+    with st.spinner("🧠 Loading AI models... (first time only, ~1 min)"):
         try:
+            # Preload GPT-Neo
             _, _, model_name = load_model_and_tokenizer()
+            # Preload DistilRoBERTa (Emotion)
+            detect_emotion("preload")
+            # Preload SentenceTransformers (RAG)
+            retrieve_context("preload")
+            
             st.session_state.models_loaded = True
         except Exception as e:
-            st.error(f"Failed to load model: {e}")
+            st.error(f"Failed to load models: {e}")
             st.stop()
 
 # ─── Display Chat History ───────────────────────────────────
@@ -528,5 +534,3 @@ if user_input := st.chat_input("Share what's on your mind..."):
         )
     except Exception:
         pass
-
-    st.rerun()
