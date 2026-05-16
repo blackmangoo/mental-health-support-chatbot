@@ -1,3 +1,14 @@
+---
+title: Serene Wellness Bot
+emoji: 🌿
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+sdk_version: 1.41.1
+app_file: app.py
+pinned: false
+license: mit
+---
 # 🧠 Mental Health Support Chatbot
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
