@@ -20,7 +20,7 @@ from src.config import RAG_EMBEDDING_MODEL, RAG_TOP_K
 import streamlit as st
 
 
-KB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'knowledge_base.json')
+KB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'knowledge_base.json'))
 
 
 @st.cache_resource(show_spinner=False)
