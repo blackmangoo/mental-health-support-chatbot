@@ -9,210 +9,111 @@ app_file: app.py
 pinned: false
 license: mit
 ---
-# 🧠 Mental Health Support Chatbot
+# 🌿 Serene: AI Wellness Companion
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
-![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-yellow?logo=huggingface)
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-red?logo=streamlit)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-Spaces-yellow?logo=huggingface)
+![Supabase](https://img.shields.io/badge/Supabase-Database-green?logo=supabase)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-orange?logo=pytorch)
 
-> A fine-tuned chatbot providing empathetic, supportive responses for emotional wellness.
+> **Live Demo:** [Serene Wellness Bot on Hugging Face Spaces](https://huggingface.co/spaces/BlackMangoo/serene-wellness-bot)
 
-## 🎯 Objective
+**Serene** is an empathetic, AI-powered mental health support chatbot built as part of the DevelopersHub Corporation AI/ML Engineering Internship. It leverages fine-tuned Large Language Models, real-time emotion detection, and Retrieval-Augmented Generation (RAG) to provide safe, context-aware, and evidence-based wellness guidance.
 
-Fine-tune a small language model on the EmpatheticDialogues dataset to create a chatbot that provides **supportive, empathetic responses** for stress, anxiety, and emotional wellness.
+---
 
-## 📚 What You'll Learn
+## ✨ Key Features
 
-- **Transfer learning & fine-tuning** (what it does to a model)
-- **HuggingFace Transformers** ecosystem
-- **Dataset preparation** for conversational AI
-- **Training loop** (epochs, loss, learning rate)
-- **LoRA/QLoRA** for efficient fine-tuning (less GPU needed)
-- **Model evaluation** (perplexity, qualitative evaluation)
-- **Ethical AI** considerations for mental health applications
-- **Google Colab** for GPU training
+* **🧠 Fine-Tuned Empathy:** Powered by `GPT-Neo-125M`, fine-tuned using LoRA on the *EmpatheticDialogues* dataset to generate supportive and conversational responses.
+* **🎭 Real-Time Emotion Detection:** Uses a local `DistilRoBERTa` sequence classification model to instantly analyze the user's input and dynamically categorize their emotional state (e.g., Neutral, Joy, Sadness, Anger).
+* **📚 Evidence-Based RAG Pipeline:** Integrates a local FAISS vector database with `SentenceTransformers`. When distress is detected, it retrieves clinically-backed wellness exercises from a curated knowledge base and injects them into the model's context.
+* **🛡️ Crisis Management System:** Employs regex-based safety checks to detect crisis phrases (e.g., suicide, self-harm). It instantly overrides standard generation to display a high-visibility banner with global crisis hotlines.
+* **💾 Persistent Memory:** Uses **Supabase (PostgreSQL)** to securely log conversation sessions, user messages, AI responses, and detected emotions, allowing for seamless session continuation.
+* **💎 Premium UI:** Built with Streamlit, featuring a calming glassmorphism aesthetic, real-time emotion badges, and a responsive sidebar.
 
-## 🧠 Concepts to Revise Before Starting
+---
 
-| Concept | Resource |
-|---------|----------|
-| Transfer Learning | [StatQuest Video](https://www.youtube.com/watch?v=yofjFQddwHE) |
-| Fine-Tuning LLMs | [HuggingFace Fine-Tuning Guide](https://huggingface.co/docs/transformers/training) |
-| Tokenization | [HuggingFace Tokenizers](https://www.youtube.com/watch?v=VFp38yj8h3A) |
-| LoRA | [LoRA Explained](https://www.youtube.com/watch?v=PXWYUTMt-AU) |
-| Training Loop | [PyTorch Training Basics](https://www.youtube.com/watch?v=c36lUUr864M) |
-| EmpatheticDialogues | [Paper](https://arxiv.org/abs/1811.00207) |
-| Google Colab + GPU | [Colab Guide](https://colab.research.google.com/) |
+## 🏗️ System Architecture & Advantages
+
+### 1. Fine-Tuning with LoRA (Low-Rank Adaptation)
+Instead of fine-tuning the entire GPT-Neo model (which requires massive GPU clusters), we used **LoRA/PEFT**. 
+* **Advantage:** LoRA freezes the pre-trained weights and injects trainable rank decomposition matrices into each layer. This reduced trainable parameters by over 95%, allowing the model to be trained quickly and efficiently on a free Google Colab T4 GPU without sacrificing quality.
+
+### 2. Retrieval-Augmented Generation (RAG)
+LLMs are prone to hallucinating facts. To ensure the bot gives safe psychological advice, we implemented a RAG pipeline.
+* **Advantage:** By embedding a curated `knowledge_base.json` using `FAISS` and `all-MiniLM-L6-v2`, the chatbot fetches exact coping strategies based on semantic similarity. The model acts as a friendly wrapper around hard, factual data rather than inventing its own medical advice.
+
+### 3. Edge Emotion Detection
+We process emotions locally in the same runtime using a compressed `DistilRoBERTa` model rather than calling external APIs.
+* **Advantage:** Eliminates network latency, ensures 100% data privacy for the user's emotional state, and acts as a lightweight gatekeeper to trigger the RAG pipeline only when necessary.
+
+### 4. Serverless Deployment (Hugging Face Spaces)
+The application is hosted on Hugging Face Spaces using a Dockerized Streamlit environment.
+* **Advantage:** Provides a free, globally accessible, and highly scalable GPU/CPU environment designed specifically for Machine Learning demos. It handles dependency management and CI/CD directly via Git.
+
+---
 
 ## 📁 Project Structure
 
-```
+```text
 mental-health-support-chatbot/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── Dockerfile
+├── app.py                             ← Main Streamlit application & UI
+├── requirements.txt                   ← Production dependencies
+├── README.md                          ← Project documentation
+├── .env                               ← Environment variables (Supabase, HF)
 ├── notebooks/
-│   ├── fine_tuning.ipynb              ← Run on Google Colab (GPU)
-│   └── evaluation.ipynb               ← Test & evaluate the model
+│   └── fine_tuning_colab.ipynb        ← Training script (GPT-Neo + LoRA)
 ├── src/
-│   ├── __init__.py
-│   ├── data_prep.py                   ← Prepare EmpatheticDialogues
-│   ├── train.py                       ← Fine-tuning script
-│   ├── inference.py                   ← Generate responses
-│   ├── evaluate.py                    ← Evaluation metrics
-│   └── config.py                      ← Model & training config
-├── data/                               ← Processed dataset
-├── models/                             ← Fine-tuned model weights
-├── results/                            ← Training logs, plots
-└── app/
-    └── streamlit_app.py                ← Empathetic chat UI
+│   ├── inference.py                   ← Model loading & text generation logic
+│   ├── emotion.py                     ← DistilRoBERTa emotion & crisis detection
+│   ├── rag.py                         ← FAISS vector DB & context retrieval
+│   ├── memory.py                      ← Supabase DB connection & CRUD operations
+│   └── config.py                      ← Centralized hyperparameters
+└── data/
+    └── knowledge_base.json            ← Curated wellness tips for RAG
 ```
 
-## 🚀 Step-by-Step Implementation Guide
+---
 
-### Step 1: Setup Environment (Local)
-```bash
-conda create -n mental-health python=3.11 -y
-conda activate mental-health
-pip install -r requirements.txt
-```
+## 🚀 Running Locally
 
-### Step 2: Setup Google Colab (for Training)
-1. Open Google Colab
-2. Go to Runtime → Change runtime type → T4 GPU
-3. Install dependencies:
-```python
-!pip install transformers datasets accelerate peft torch
-```
-4. Mount Google Drive (to save model)
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/blackmangoo/mental-health-support-chatbot.git
+   cd mental-health-support-chatbot
+   ```
 
-### Step 3: Dataset Preparation (`src/data_prep.py`)
-- Load EmpatheticDialogues from HuggingFace datasets:
-  ```python
-  from datasets import load_dataset
-  dataset = load_dataset("empathetic_dialogues")
-  ```
-- Understand the dataset structure (context, utterance, emotion)
-- Format into conversation pairs:
-  - Input: "User: [context/utterance]"
-  - Output: "Assistant: [empathetic response]"
-- Tokenize using the model's tokenizer
-- Split into train/validation sets
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Step 4: Model Selection & Configuration (`src/config.py`)
-- Choose base model:
-  - **DistilGPT2** (small, fast, good for learning) ← Start here
-  - **GPT-Neo 125M** (slightly larger, better quality)
-  - **Mistral-7B** (best quality, needs QLoRA — bonus)
-- Define training hyperparameters:
-  - Learning rate: 2e-5
-  - Batch size: 8 (adjust for GPU memory)
-  - Epochs: 3-5
-  - Max length: 256 tokens
+3. **Configure Environment:**
+   Create a `.env` file in the root directory:
+   ```env
+   SUPABASE_URL="your_supabase_url"
+   SUPABASE_ANON_KEY="your_supabase_anon_key"
+   ```
 
-### Step 5: Fine-Tuning (`src/train.py` + `notebooks/fine_tuning.ipynb`)
-- Load pre-trained model and tokenizer
-- Apply LoRA if using larger model
-- Use HuggingFace `Trainer` API:
-  ```python
-  from transformers import Trainer, TrainingArguments
-  ```
-- Track training loss per epoch
-- Save model checkpoints
-- Save final model to Google Drive → download locally
+4. **Launch the App:**
+   ```bash
+   streamlit run app.py
+   ```
 
-### Step 6: Evaluation (`src/evaluate.py` + `notebooks/evaluation.ipynb`)
-- Quantitative:
-  - Calculate perplexity on validation set
-  - Compare before vs after fine-tuning
-- Qualitative:
-  - Test with emotional scenarios:
-    - "I'm feeling really anxious about my exam"
-    - "I had a terrible day at work"
-    - "I feel like nobody understands me"
-  - Rate responses on: empathy, relevance, safety
-- Create a comparison table: base model vs fine-tuned
-
-### Step 7: Inference (`src/inference.py`)
-- Load fine-tuned model
-- Generate responses with appropriate parameters:
-  - temperature=0.7 (warm but not random)
-  - top_p=0.9
-  - repetition_penalty=1.2
-- Add post-processing:
-  - Ensure response isn't too long
-  - Add safety disclaimer if discussing serious topics
-
-### Step 8: Streamlit App (`app/streamlit_app.py`)
-- Calming UI design:
-  - Soft pastel colors (light blues, lavenders)
-  - Rounded message bubbles
-  - Gentle animations
-  - Breathing exercise suggestion in sidebar
-- Chat interface with message history
-- Disclaimer banner: "This is not a replacement for professional help"
-- Crisis hotline numbers displayed prominently
-- Option to clear conversation
-
-### Step 9: Training Visualization
-- Plot training loss curve
-- Plot validation loss curve
-- Compare base vs fine-tuned response quality
-- Save all plots to `results/`
-
-### Step 10: Docker
-```bash
-docker build -t mental-health-chatbot .
-docker run -p 8501:8501 mental-health-chatbot
-```
-
-## 🎯 Extra Challenges (Bonus Learning)
-
-- [ ] Fine-tune with QLoRA on Mistral-7B for better responses
-- [ ] Add emotion detection (classify user's emotion before responding)
-- [ ] Implement conversation summarization
-- [ ] Add guided meditation/breathing exercise feature
-- [ ] Compare DistilGPT2 vs GPT-Neo fine-tuned results
-- [ ] Create a training metrics dashboard
-
-## 📊 Results
-
-### Training Metrics
-| Metric | Before Fine-Tuning | After Fine-Tuning |
-|--------|-------------------|-------------------|
-| Perplexity | - | - |
-| Response Quality (1-5) | - | - |
-
-### Response Examples
-| User Input | Base Model Response | Fine-Tuned Response |
-|-----------|-------------------|-------------------|
-| "I'm stressed about exams" | - | - |
-| "I feel lonely" | - | - |
-
-### Screenshots
-<!-- Add screenshots of your Streamlit app, training curves, etc. -->
+---
 
 ## ⚠️ Ethical Considerations
 
-> **IMPORTANT:** This chatbot is for educational/supportive purposes ONLY. It is NOT a substitute for professional mental health care.
+> **IMPORTANT:** This chatbot is an experimental AI project for educational purposes. It is **NOT** a substitute for professional mental health care, therapy, or medical diagnosis.
 
-- The bot should never attempt to diagnose mental health conditions
-- Crisis resources should always be visible
-- Users should be encouraged to seek professional help
-- The model may generate inappropriate responses — always include safety disclaimers
+* The bot is programmed to detect high-risk keywords and explicitly redirect users to human professionals.
+* RAG content is sourced from general wellness guidelines (mindfulness, grounding techniques) rather than clinical interventions.
 
 ### Crisis Resources
-- **National Suicide Prevention Lifeline:** 988 (US)
-- **Crisis Text Line:** Text HOME to 741741
-- **International Association for Suicide Prevention:** https://www.iasp.info/resources/Crisis_Centres/
-
-## 🔗 Links
-
-- **Base Model:** [DistilGPT2](https://huggingface.co/distilgpt2)
-- **Dataset:** [EmpatheticDialogues](https://huggingface.co/datasets/empathetic_dialogues)
-- **Internship:** DevelopersHub Corporation AI/ML Engineering
+* **National Suicide Prevention Lifeline (US):** 988
+* **Crisis Text Line:** Text HOME to 741741
+* **International Resources:** [Find A Helpline](https://findahelpline.com/)
 
 ---
 *Built as part of DevelopersHub Corporation AI/ML Engineering Internship*
